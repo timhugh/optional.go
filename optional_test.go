@@ -253,6 +253,29 @@ func TestConditionals(t *testing.T) {
 			expectEmpty(t, mappedOpt)
 		})
 	})
+
+	t.Run("FlatMap", func(t *testing.T) {
+		t.Run("with value maps to value", func(t *testing.T) {
+			mappedOpt := optional.FlatMap(optional.Of(10), func(v int) optional.Optional[string] {
+				return optional.Of("the number was " + fmt.Sprint(v))
+			})
+			expectHasValue(t, mappedOpt, "the number was 10")
+		})
+
+		t.Run("with value maps to empty", func(t *testing.T) {
+			mappedOpt := optional.FlatMap(optional.Of(-5), func(v int) optional.Optional[string] {
+				return optional.Empty[string]()
+			})
+			expectEmpty(t, mappedOpt)
+		})
+
+		t.Run("empty", func(t *testing.T) {
+			mappedOpt := optional.FlatMap(optional.Empty[int](), func(v int) optional.Optional[string] {
+				return optional.Of("this should not be called")
+			})
+			expectEmpty(t, mappedOpt)
+		})
+	})
 }
 
 func TestMapExampleInReadme(t *testing.T) {

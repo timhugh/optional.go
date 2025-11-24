@@ -124,3 +124,14 @@ func Map[T any, U any](opt Optional[T], mapper func(T) U) Optional[U] {
 	}
 	return Empty[U]()
 }
+
+// FlatMap applies the provided mapper function to the contained value of type T if present,
+// returning the Optional[U] result of the mapper. If the Optional is empty,
+// an empty Optional of type U is returned.
+func FlatMap[T any, U any](opt Optional[T], mapper func(T) Optional[U]) Optional[U] {
+	if opt.HasValue() {
+		return mapper(opt.value)
+	}
+	return Empty[U]()
+}
+
